@@ -2,15 +2,75 @@
 
 class FloorMatSimulator {
     constructor() {
+        // DOM元素
         this.gridArea = document.getElementById('grid-area');
+        
+        // 縮放相關設定
         this.zoomLevel = 1;
-        this.minZoom = 0.5;
-        this.maxZoom = 3;
+        this.ZOOM_SETTINGS = {
+            MIN: 0.5,
+            MAX: 3,
+            STEP: 0.1
+        };
+        
+        // 網格設定
         this.gridCols = 8;
         this.gridRows = 8;
         this.placedMats = 0;
-        this.groups = []; // 群組資訊
-        this.isDraggingExistingMat = false; // 追蹤是否在拖曳現有地墊
+        
+        // 群組資訊
+        this.groups = [];
+        this.isDraggingExistingMat = false;
+        
+        // 動畫常數
+        this.ANIMATION_COLORS = {
+            HIGHLIGHT: '#2471ed',
+            DEFAULT: '#ffffff'
+        };
+        
+        this.ANIMATION_TIMING = {
+            FADE_IN: 1000,  // 漸入時間 (ms)
+            FADE_OUT: 3000, // 漸出時間 (ms)
+            MESSAGE_AUTO_HIDE: 3000, // 訊息自動隱藏時間 (ms)
+            SLIDE_ANIMATION: 300, // 訊息滑動動畫時間 (ms)
+            DOUBLE_CLICK_DELAY: 300 // 雙擊檢測延遲 (ms)
+        };
+        
+        // 訊息顏色設定
+        this.MESSAGE_COLORS = {
+            SUCCESS: '#27ae60',
+            WARNING: '#f39c12',
+            ERROR: '#e74c3c',
+            INFO: '#3498db'
+        };
+        
+        // 訊息樣式設定
+        this.MESSAGE_STYLES = {
+            POSITION_TOP: '20px',
+            POSITION_RIGHT: '20px',
+            PADDING: '12px 20px',
+            BORDER_RADIUS: '4px',
+            Z_INDEX: '10000',
+            BOX_SHADOW: '0 4px 8px rgba(0,0,0,0.2)'
+        };
+        
+        // 色彩映射設定
+        this.COLOR_MAP = {
+            SATURATION: 70,
+            LIGHTNESS: 50,
+            HUE_RANGE: 300,
+            SINGLE_GROUP_HUE_STEP: 60
+        };
+        
+        // UI顏色設定
+        this.UI_COLORS = {
+            LOG_TIME: '#2c3e50'
+        };
+        
+        // 佈局常數
+        this.LAYOUT = {
+            LOG_MARGIN_TOP: '2px'
+        };
         
         this.init();
     }
@@ -19,14 +79,10 @@ class FloorMatSimulator {
     getRainbowColor(groupIndex, totalGroups) {
         // 將群組索引映射到0-1之間，即使只有一個群組也使用colormap
         const hue = totalGroups <= 1 ? 
-            (groupIndex * 60) % 360 : // 單個群組時每個群組間隔60度
-            (groupIndex / Math.max(1, totalGroups - 1)) * 300; // 多個群組時使用0-300度避免重複紅色
+            (groupIndex * this.COLOR_MAP.SINGLE_GROUP_HUE_STEP) % 360 : 
+            (groupIndex / Math.max(1, totalGroups - 1)) * this.COLOR_MAP.HUE_RANGE;
         
-        // HSL to RGB conversion for rainbow effect
-        const saturation = 70; // 飽和度70%
-        const lightness = 50;  // 亮度50%
-        
-        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        return `hsl(${hue}, ${this.COLOR_MAP.SATURATION}%, ${this.COLOR_MAP.LIGHTNESS}%)`;
     }
     
     init() {
@@ -218,7 +274,7 @@ class FloorMatSimulator {
                 clickTimer = setTimeout(() => {
                     this.onMatClick(cell);
                     clickCount = 0;
-                }, 300);
+                }, this.ANIMATION_TIMING.DOUBLE_CLICK_DELAY);
             } else if (clickCount === 2) {
                 // 雙擊處理
                 clearTimeout(clickTimer);
@@ -287,7 +343,7 @@ class FloorMatSimulator {
                 clickTimer = setTimeout(() => {
                     this.onMatClick(targetCell);
                     clickCount = 0;
-                }, 300);
+                }, this.ANIMATION_TIMING.DOUBLE_CLICK_DELAY);
             } else if (clickCount === 2) {
                 clearTimeout(clickTimer);
                 this.removeMat(targetCell);
@@ -544,8 +600,6 @@ class FloorMatSimulator {
     
     // 高亮單個地墊
     highlightSingleMat(cell) {
-        console.log('開始高亮地墊'); // 調試信息
-        
         // 清除任何現有的計時器
         if (cell.highlightTimer) {
             clearTimeout(cell.highlightTimer);
@@ -563,45 +617,37 @@ class FloorMatSimulator {
         // 強制重繪
         cell.offsetHeight;
         
-        console.log('添加highlighted類別'); // 調試信息
-        
         // 第一階段：1秒從白色漸變到藍色
-        cell.style.backgroundColor = '#ffffff';
-        cell.style.transition = 'background-color 1s ease-in-out';
-        cell.style.setProperty('transition', 'background-color 1s ease-in-out', 'important');
+        cell.style.backgroundColor = this.ANIMATION_COLORS.DEFAULT;
+        cell.style.transition = `background-color ${this.ANIMATION_TIMING.FADE_IN}ms ease-in-out`;
+        cell.style.setProperty('transition', `background-color ${this.ANIMATION_TIMING.FADE_IN}ms ease-in-out`, 'important');
         
         // 強制重繪
         cell.offsetHeight;
         
         // 用requestAnimationFrame確保在下一個渲染週期改變顏色
         requestAnimationFrame(() => {
-            console.log('設置藍色背景，開始1秒漸變');
-            cell.style.backgroundColor = '#2471ed';
-            cell.style.setProperty('background-color', '#2471ed', 'important');
+            cell.style.backgroundColor = this.ANIMATION_COLORS.HIGHLIGHT;
+            cell.style.setProperty('background-color', this.ANIMATION_COLORS.HIGHLIGHT, 'important');
         });
         
         // 1秒後開始淡出動畫
         cell.fadeTimer = setTimeout(() => {
-            console.log('開始淡出動畫 - 設置3秒transition'); // 調試信息
-            
             // 第二階段：3秒從藍色漸變回白色
-            cell.style.transition = 'background-color 3s ease-in-out';
-            cell.style.setProperty('transition', 'background-color 3s ease-in-out', 'important');
-            cell.style.backgroundColor = '#ffffff';
-            cell.style.setProperty('background-color', '#ffffff', 'important');
-            
-            console.log('已設置背景為白色，transition為3秒'); // 調試信息
+            cell.style.transition = `background-color ${this.ANIMATION_TIMING.FADE_OUT}ms ease-in-out`;
+            cell.style.setProperty('transition', `background-color ${this.ANIMATION_TIMING.FADE_OUT}ms ease-in-out`, 'important');
+            cell.style.backgroundColor = this.ANIMATION_COLORS.DEFAULT;
+            cell.style.setProperty('background-color', this.ANIMATION_COLORS.DEFAULT, 'important');
             
             // 3秒後完全清除
             cell.highlightTimer = setTimeout(() => {
-                console.log('清除所有樣式'); // 調試信息
                 cell.style.cssText = '';
                 cell.classList.remove('highlighted', 'fading');
                 cell.highlightTimer = null;
-            }, 3000);
+            }, this.ANIMATION_TIMING.FADE_OUT);
             
             cell.fadeTimer = null;
-        }, 1000);
+        }, this.ANIMATION_TIMING.FADE_IN);
     }
     
     // 高亮群組（保留函數以備未來使用）
@@ -655,8 +701,8 @@ class FloorMatSimulator {
         
         const record = document.createElement('p');
         record.innerHTML = `
-            <div style="font-weight: bold; color: #2c3e50;">${time}</div>
-            <div style="margin-top: 2px;">群組: ${groupId} | 編號: ${matNumber}</div>
+            <div style="font-weight: bold; color: ${this.UI_COLORS.LOG_TIME};">${time}</div>
+            <div style="margin-top: ${this.LAYOUT.LOG_MARGIN_TOP};">群組: ${groupId} | 編號: ${matNumber}</div>
         `;
         outputLog.appendChild(record);
         
@@ -669,15 +715,15 @@ class FloorMatSimulator {
     
     // 縮放功能
     zoomIn() {
-        if (this.zoomLevel < this.maxZoom) {
-            this.zoomLevel += 0.1;
+        if (this.zoomLevel < this.ZOOM_SETTINGS.MAX) {
+            this.zoomLevel += this.ZOOM_SETTINGS.STEP;
             this.applyZoom();
         }
     }
     
     zoomOut() {
-        if (this.zoomLevel > this.minZoom) {
-            this.zoomLevel -= 0.1;
+        if (this.zoomLevel > this.ZOOM_SETTINGS.MIN) {
+            this.zoomLevel -= this.ZOOM_SETTINGS.STEP;
             this.applyZoom();
         }
     }
@@ -804,8 +850,8 @@ class FloorMatSimulator {
         document.getElementById('group-count').textContent = this.groups.length;
         
         // 更新按鈕狀態
-        document.getElementById('zoom-in').disabled = this.zoomLevel >= this.maxZoom;
-        document.getElementById('zoom-out').disabled = this.zoomLevel <= this.minZoom;
+        document.getElementById('zoom-in').disabled = this.zoomLevel >= this.ZOOM_SETTINGS.MAX;
+        document.getElementById('zoom-out').disabled = this.zoomLevel <= this.ZOOM_SETTINGS.MIN;
     }
     
     // 顯示訊息
@@ -816,15 +862,15 @@ class FloorMatSimulator {
         messageEl.textContent = message;
         messageEl.style.cssText = `
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
+            top: ${this.MESSAGE_STYLES.POSITION_TOP};
+            right: ${this.MESSAGE_STYLES.POSITION_RIGHT};
+            padding: ${this.MESSAGE_STYLES.PADDING};
             background: ${this.getMessageColor(type)};
             color: white;
-            border-radius: 4px;
-            z-index: 10000;
+            border-radius: ${this.MESSAGE_STYLES.BORDER_RADIUS};
+            z-index: ${this.MESSAGE_STYLES.Z_INDEX};
             animation: slideIn 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: ${this.MESSAGE_STYLES.BOX_SHADOW};
         `;
         
         document.body.appendChild(messageEl);
@@ -836,17 +882,17 @@ class FloorMatSimulator {
                 if (messageEl.parentNode) {
                     messageEl.parentNode.removeChild(messageEl);
                 }
-            }, 300);
-        }, 3000);
+            }, this.ANIMATION_TIMING.SLIDE_ANIMATION);
+        }, this.ANIMATION_TIMING.MESSAGE_AUTO_HIDE);
     }
     
     // 獲取訊息顏色
     getMessageColor(type) {
         switch (type) {
-            case 'success': return '#27ae60';
-            case 'warning': return '#f39c12';
-            case 'error': return '#e74c3c';
-            default: return '#3498db';
+            case 'success': return this.MESSAGE_COLORS.SUCCESS;
+            case 'warning': return this.MESSAGE_COLORS.WARNING;
+            case 'error': return this.MESSAGE_COLORS.ERROR;
+            default: return this.MESSAGE_COLORS.INFO;
         }
     }
     
@@ -922,12 +968,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 顯示歡迎訊息
     simulator.showMessage('地墊模擬器已準備就緒！', 'success');
-    
-    // 添加快捷鍵說明
-    console.log('地墊模擬器快捷鍵：');
-    console.log('Ctrl + 加號：放大');
-    console.log('Ctrl + 減號：縮小');
-    console.log('Ctrl + 0：重設縮放');
-    console.log('Ctrl + 滑鼠滾輪：縮放');
-    console.log('Shift + Delete：清除所有地墊');
 });

@@ -229,15 +229,6 @@ body {
     transition: background-color 0s !important;
 }
 
-/* 右側工具箱 (20% 寬度) */
-.sidebar {
-    width: 20%;
-    height: 100vh;
-    background-color: #ecf0f1;
-    padding: 15px;
-    overflow-y: auto;
-}
-
 .sidebar h3 {
     color: #2c3e50;
     margin: 0px 0 8px 0;
@@ -552,12 +543,6 @@ body {
     background-color: #ffebee !important;
     border-color: #f44336 !important;
     border-style: dashed !important;
-}
-
-.grid-cell.drag-over {
-    background-color: #f39c12;
-    border-color: #d68910;
-    box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
 }
 
 .mat-placed[draggable="true"] {
