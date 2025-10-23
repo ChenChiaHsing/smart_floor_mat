@@ -302,6 +302,36 @@ body {
     border-radius: 3px;
 }
 
+/* 版權宣告面板 */
+.copyright-panel {
+    margin-top: 15px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}
+
+.copyright-text {
+    font-size: 11px;
+    color: #7f8c8d;
+    margin: 0 0 3px 0;
+    font-weight: bold;
+}
+
+.copyright-subtitle {
+    font-size: 9px;
+    color: #95a5a6;
+    margin: 0 0 2px 0;
+    line-height: 1.2;
+}
+
+.copyright-course {
+    font-size: 8px;
+    color: #bdc3c7;
+    margin: 0;
+    font-style: italic;
+    line-height: 1.2;
+}
+
 /* 地墊庫 */
 .mat-library {
     background-color: white;
