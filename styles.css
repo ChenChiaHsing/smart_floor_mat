@@ -1,0 +1,505 @@
+/* 全域樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft JhengHei', Arial, sans-serif;
+    background-color: #f5f5f5;
+    overflow: hidden;
+}
+
+/* 主容器 */
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+/* 左側網格容器 (65% 寬度) */
+.grid-container {
+    width: 65%;
+    height: 100vh;
+    background-color: #ffffff;
+    border-right: 2px solid #ddd;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 中間記錄區域 (15% 寬度) */
+.record-area {
+    width: 15%;
+    height: 100vh;
+    background-color: #f8f9fa;
+    border-right: 2px solid #ddd;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 右側工具箱 (20% 寬度) */
+.sidebar {
+    width: 20%;
+    height: 100vh;
+    background-color: #ecf0f1;
+    padding: 15px;
+    overflow-y: auto;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+}
+
+/* 工具列 */
+.toolbar {
+    height: 50px;
+    background-color: #2c3e50;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.toolbar button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.toolbar button:hover {
+    background-color: #2980b9;
+}
+
+.zoom-level {
+    margin-left: auto;
+    font-weight: bold;
+}
+
+/* 網格包裝器 */
+.grid-wrapper {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    background-color: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 網格區域 */
+.grid-area {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 2px;
+    padding: 20px;
+    background-color: #ffffff;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+    height: 95%;
+    width: 95%;
+    aspect-ratio: 1;
+    max-width: 95vh;
+    max-height: 95vh;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+/* 網格單元 */
+.grid-cell {
+    aspect-ratio: 1;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    transition: background-color 0s;
+    position: relative;
+    min-height: 0;
+    min-width: 0;
+}
+
+.grid-cell:hover {
+    background-color: #e8f4f8;
+    border-color: #3498db;
+}
+
+.grid-cell.drag-over {
+    background-color: #f39c12;
+    border-color: #d68910;
+    box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+}
+
+/* 地墊樣式 */
+.mat-placed {
+    width: 100%;
+    height: 100%;
+    background-image: url('assets/floor_mat.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    border-radius: 2px;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 2px;
+    background-color: transparent !important;
+}
+
+.mat-number {
+    background-color: rgba(52, 152, 219, 0.9);
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 1px 4px;
+    border-radius: 3px;
+    line-height: 1;
+    min-width: 12px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* 群組樣式 */
+.grid-cell.in-group {
+    position: relative;
+    --group-color: hsl(0, 70%, 50%); /* 預設為紅色 */
+}
+
+.grid-cell.in-group.group-border-top::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--group-color);
+    z-index: 10;
+}
+
+.grid-cell.in-group.group-border-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--group-color);
+    z-index: 10;
+}
+
+.grid-cell.in-group.group-border-left {
+    border-left: 2px solid var(--group-color);
+}
+
+.grid-cell.in-group.group-border-right {
+    border-right: 2px solid var(--group-color);
+}
+
+.group-label {
+    position: absolute;
+    top: -24px;
+    left: -24px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 3px;
+    line-height: 1;
+    z-index: 10;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* 高亮效果 - 精確設置 */
+.grid-cell.highlighted {
+    background-color: #2471ed !important;
+    transition: background-color 0.5s ease-out !important;
+}
+
+.grid-cell.fading {
+    background-color: #ffffff !important;
+    transition: background-color 2s ease-out !important;
+}
+
+.grid-cell:not(.highlighted):not(.fading) {
+    transition: background-color 0s !important;
+}
+
+/* 右側工具箱 (20% 寬度) */
+.sidebar {
+    width: 20%;
+    height: 100vh;
+    background-color: #ecf0f1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.sidebar h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 6px;
+}
+
+.sidebar h4 {
+    color: #34495e;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+/* 記錄區域樣式 */
+.record-area h4 {
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+    padding: 10px;
+    font-size: 14px;
+    border-bottom: 2px solid #e74c3c;
+    background-color: white;
+}
+
+/* 地墊庫 */
+.mat-library {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    border: 2px dashed #bdc3c7;
+    border-radius: 8px;
+    cursor: grab;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.mat-item:hover {
+    border-color: #3498db;
+    background-color: #e8f4f8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+}
+
+.mat-item:active {
+    cursor: grabbing;
+    transform: translateY(0);
+}
+
+.mat-preview {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 8px;
+}
+
+.mat-item span {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* 資訊面板 */
+.info-panel {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.grid-info p {
+    margin-bottom: 8px;
+    color: #34495e;
+    font-size: 12px;
+}
+
+.grid-info span {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* 輸出面板 */
+.output-panel {
+    background-color: white;
+    border-radius: 0;
+    padding: 10px;
+    box-shadow: none;
+    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #ddd;
+}
+
+.output-log {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 11px;
+    background-color: #f8f9fa;
+    margin-bottom: 8px;
+}
+
+.output-log p {
+    margin: 3px 0;
+    padding: 4px 6px;
+    border-radius: 3px;
+    background-color: white;
+    border-left: 3px solid #3498db;
+    line-height: 1.3;
+}
+
+.output-log .no-records {
+    color: #7f8c8d;
+    font-style: italic;
+    text-align: center;
+    background-color: transparent;
+    border: none;
+}
+
+.clear-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: background-color 0.3s;
+}
+
+.clear-btn:hover {
+    background-color: #c0392b;
+}
+
+.clear-btn:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+/* 響應式設計 */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .grid-container {
+        width: 100%;
+        height: 50vh;
+    }
+    
+    .record-area {
+        width: 100%;
+        height: 25vh;
+        padding: 10px;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: 25vh;
+        padding: 10px;
+    }
+    
+    .grid-area {
+        height: 85%;
+        width: 85%;
+        max-width: 40vh;
+        max-height: 40vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        height: 45vh;
+    }
+    
+    .record-area {
+        height: 30vh;
+    }
+    
+    .sidebar {
+        height: 25vh;
+    }
+    
+    .toolbar {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 50px;
+        padding: 10px;
+    }
+    
+    .grid-area {
+        height: 80%;
+        width: 80%;
+        max-width: 35vh;
+        max-height: 35vh;
+        padding: 15px;
+    }
+}
+
+/* 滾動條樣式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 拖曳時的視覺效果 */
+.dragging {
+    opacity: 0.7;
+    transform: rotate(5deg);
+    z-index: 1000;
+}
+
+.dragging-source {
+    background-color: #ffebee !important;
+    border-color: #f44336 !important;
+    border-style: dashed !important;
+}
+
+.grid-cell.drag-over {
+    background-color: #f39c12;
+    border-color: #d68910;
+    box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+}
+
+.mat-placed[draggable="true"] {
+    cursor: grab;
+}
+
+.mat-placed[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+/* 縮放相關樣式 */
+.grid-wrapper.zoomed {
+    cursor: grab;
+}
+
+.grid-wrapper.zoomed:active {
+    cursor: grabbing;
+}

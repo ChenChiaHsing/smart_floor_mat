@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地墊模擬器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 左側網格區域 (4/5 寬度) -->
+        <div class="grid-container">
+            <div class="toolbar">
+                <button id="zoom-in">放大 (+)</button>
+                <button id="zoom-out">縮小 (-)</button>
+                <button id="reset-zoom">重設縮放</button>
+                <span class="zoom-level">縮放: 100%</span>
+            </div>
+            <div class="grid-wrapper">
+                <div class="grid-area" id="grid-area">
+                    <!-- 網格將在這裡動態生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 中間記錄區域 -->
+        <div class="record-area">
+            <div class="output-panel">
+                <h4>點選記錄</h4>
+                <div class="output-log" id="output-log">
+                    <p class="no-records">尚無點選記錄</p>
+                </div>
+                <button id="clear-log" class="clear-btn">清除記錄</button>
+            </div>
+        </div>
+        
+        <!-- 右側工具箱區域 -->
+        <div class="sidebar">
+            <h3>工具箱</h3>
+            <div class="mat-library">
+                <h4>地墊素材</h4>
+                <div class="mat-item" draggable="true" data-mat="floor_mat">
+                    <img src="assets/floor_mat.svg" alt="地墊" class="mat-preview">
+                    <span>地墊</span>
+                </div>
+            </div>
+            <div class="info-panel">
+                <h4>資訊</h4>
+                <div class="grid-info">
+                    <p>網格大小: <span id="grid-size">8x8</span></p>
+                    <p>已放置: <span id="placed-count">0</span> 個地墊</p>
+                    <p>群組數量: <span id="group-count">0</span> 個</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

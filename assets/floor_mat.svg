@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_圖層_1" data-name="圖層_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 320 320">
+  <!-- Generator: Adobe Illustrator 29.8.2, SVG Export Plug-In . SVG Version: 2.1.1 Build 3)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #30333c;
+      }
+
+      .st1 {
+        stroke: #020202;
+        stroke-width: 3px;
+      }
+
+      .st1, .st2, .st3 {
+        fill: none;
+        stroke-miterlimit: 2.13;
+      }
+
+      .st4 {
+        fill: #fff;
+      }
+
+      .st5 {
+        mask: url(#mask);
+      }
+
+      .st2 {
+        stroke: #000;
+        stroke-opacity: .2;
+        stroke-width: .53px;
+      }
+
+      .st3 {
+        stroke: #606075;
+        stroke-width: 2px;
+      }
+
+      .st6 {
+        opacity: .55;
+      }
+    </style>
+    <mask id="mask" x="0" y="0" width="320" height="320" maskUnits="userSpaceOnUse">
+      <g id="matMask">
+        <rect x="0" y="0" width="320" height="320"/>
+        <rect class="st4" x="32" y="32" width="256" height="256" rx="9.6" ry="9.6"/>
+        <rect class="st4" x="138.67" y="10.67" width="42.67" height="32" rx="3.2" ry="3.2"/>
+        <rect class="st4" x="138.67" y="277.33" width="42.67" height="32" rx="3.2" ry="3.2"/>
+        <rect class="st4" x="10.67" y="138.67" width="32" height="42.67" rx="3.2" ry="3.2"/>
+        <rect class="st4" x="277.33" y="138.67" width="32" height="42.67" rx="3.2" ry="3.2"/>
+        <rect x="53.33" y="32" width="19.2" height="11.73" rx="2.13" ry="2.13"/>
+        <rect x="247.47" y="32" width="19.2" height="11.73" rx="2.13" ry="2.13"/>
+        <rect x="53.33" y="276.27" width="19.2" height="11.73" rx="2.13" ry="2.13"/>
+        <rect x="247.47" y="276.27" width="19.2" height="11.73" rx="2.13" ry="2.13"/>
+        <rect x="32" y="53.33" width="11.73" height="19.2" rx="2.13" ry="2.13"/>
+        <rect x="32" y="247.47" width="11.73" height="19.2" rx="2.13" ry="2.13"/>
+        <rect x="276.27" y="53.33" width="11.73" height="19.2" rx="2.13" ry="2.13"/>
+        <rect x="276.27" y="247.47" width="11.73" height="19.2" rx="2.13" ry="2.13"/>
+      </g>
+    </mask>
+  </defs>
+  <g class="st5">
+    <rect class="st0" x="0" y="0" width="320" height="320"/>
+  </g>
+  <g class="st6">
+    <circle class="st1" cx="160" cy="160" r="80"/>
+    <circle class="st1" cx="160" cy="160" r="101.33"/>
+  </g>
+  <rect class="st2" x="34.67" y="34.67" width="250.67" height="250.67" rx="8.53" ry="8.53"/>
+  <line class="st3" x1="87.04" y1="42.73" x2="232.96" y2="42.73"/>
+  <line class="st3" x1="87.04" y1="275.66" x2="232.96" y2="275.66"/>
+  <line class="st3" x1="43.61" y1="232.96" x2="43.61" y2="87.04"/>
+  <line class="st3" x1="276.39" y1="232.96" x2="276.39" y2="87.04"/>
+</svg>
