@@ -9,19 +9,50 @@ body {
     font-family: 'Microsoft JhengHei', Arial, sans-serif;
     background-color: #f5f5f5;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* 標題欄 */
+.title-header {
+    background: linear-gradient(135deg, #161b47 0%, #374087 100%);
+    color: white;
+    padding: 10px 30px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1000;
+    flex-shrink: 0;
+}
+
+.title-header h1 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    letter-spacing: 1px;
+}
+
+.title-header p {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 300;
+    letter-spacing: 0.5px;
 }
 
 /* 主容器 */
 .container {
     display: flex;
-    height: 100vh;
+    flex: 1;
     width: 100%;
+    min-height: 0;
+    overflow: hidden;
 }
 
 /* 左側網格容器 (65% 寬度) */
 .grid-container {
     width: 65%;
-    height: 100vh;
+    height: 100%;
     background-color: #ffffff;
     border-right: 2px solid #ddd;
     display: flex;
@@ -31,7 +62,7 @@ body {
 /* 中間記錄區域 (15% 寬度) */
 .record-area {
     width: 15%;
-    height: 100vh;
+    height: 100%;
     background-color: #f8f9fa;
     border-right: 2px solid #ddd;
     padding: 0;
@@ -43,43 +74,11 @@ body {
 /* 右側工具箱 (20% 寬度) */
 .sidebar {
     width: 20%;
-    height: 100vh;
+    height: 100%;
     background-color: #ecf0f1;
     padding: 15px;
     overflow-y: auto;
     box-shadow: -2px 0 4px rgba(0,0,0,0.1);
-}
-
-/* 工具列 */
-.toolbar {
-    height: 50px;
-    background-color: #2c3e50;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-    gap: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.toolbar button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.toolbar button:hover {
-    background-color: #2980b9;
-}
-
-.zoom-level {
-    margin-left: auto;
-    font-weight: bold;
 }
 
 /* 網格包裝器 */
@@ -241,7 +240,7 @@ body {
 
 .sidebar h3 {
     color: #2c3e50;
-    margin-bottom: 15px;
+    margin: 0px 0 8px 0;
     font-size: 16px;
     border-bottom: 2px solid #3498db;
     padding-bottom: 6px;
@@ -256,11 +255,51 @@ body {
 /* 記錄區域樣式 */
 .record-area h4 {
     color: #2c3e50;
-    margin: 0 0 10px 0;
-    padding: 10px;
-    font-size: 14px;
+    margin: 4px 15px 10px 15px;
+    padding: 0 0 6px 0;
+    font-size: 16px;
     border-bottom: 2px solid #e74c3c;
     background-color: white;
+}
+
+/* 縮放面板 */
+.zoom-panel {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.zoom-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.zoom-controls button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.zoom-controls button:hover {
+    background-color: #2980b9;
+}
+
+.zoom-level {
+    font-weight: bold;
+    font-size: 11px;
+    color: #2c3e50;
+    text-align: center;
+    padding: 4px;
+    background-color: #ecf0f1;
+    border-radius: 3px;
 }
 
 /* 地墊庫 */
@@ -313,6 +352,7 @@ body {
     background-color: white;
     border-radius: 8px;
     padding: 10px;
+    margin-bottom: 15px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -338,6 +378,7 @@ body {
     display: flex;
     flex-direction: column;
     border-top: 1px solid #ddd;
+    justify-content: space-between;
 }
 
 .output-log {
@@ -375,7 +416,9 @@ body {
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 11px;
+    font-size: 14px;
+    margin-top: auto;
+    margin-bottom: 4px;
     transition: background-color 0.3s;
 }
 

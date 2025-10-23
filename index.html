@@ -7,15 +7,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- 標題欄 -->
+    <header class="title-header">
+        <h1>智慧健康地墊模擬系統</h1>
+        <p>國立臺北科技大學 互動設計系 智慧空間互動程式設計</p>
+    </header>
+    
     <div class="container">
         <!-- 左側網格區域 (4/5 寬度) -->
         <div class="grid-container">
-            <div class="toolbar">
-                <button id="zoom-in">放大 (+)</button>
-                <button id="zoom-out">縮小 (-)</button>
-                <button id="reset-zoom">重設縮放</button>
-                <span class="zoom-level">縮放: 100%</span>
-            </div>
             <div class="grid-wrapper">
                 <div class="grid-area" id="grid-area">
                     <!-- 網格將在這裡動態生成 -->
@@ -37,6 +37,7 @@
         <!-- 右側工具箱區域 -->
         <div class="sidebar">
             <h3>工具箱</h3>
+            
             <div class="mat-library">
                 <h4>地墊素材</h4>
                 <div class="mat-item" draggable="true" data-mat="floor_mat">
@@ -44,12 +45,24 @@
                     <span>地墊</span>
                 </div>
             </div>
+            
             <div class="info-panel">
                 <h4>資訊</h4>
                 <div class="grid-info">
                     <p>網格大小: <span id="grid-size">8x8</span></p>
                     <p>已放置: <span id="placed-count">0</span> 個地墊</p>
                     <p>群組數量: <span id="group-count">0</span> 個</p>
+                </div>
+            </div>
+            
+            <!-- 縮放控制 -->
+            <div class="zoom-panel">
+                <h4>縮放控制</h4>
+                <div class="zoom-controls">
+                    <button id="zoom-in">放大 (+)</button>
+                    <button id="zoom-out">縮小 (-)</button>
+                    <button id="reset-zoom">重設縮放</button>
+                    <span class="zoom-level">縮放: 100%</span>
                 </div>
             </div>
         </div>
