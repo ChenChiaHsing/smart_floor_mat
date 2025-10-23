@@ -31,6 +31,9 @@ class LanguageManager {
                 'zoom-label': '縮放',
                 'university': '國立臺北科技大學 互動設計系',
                 'author': '陳家興',
+                // 儲存/載入功能 / Save/Load Functions
+                'save-config': '儲存配置',
+                'load-config': '載入配置',
                 // 記錄相關 / Record Related
                 'group-label': '群組',
                 'number-label': '編號',
@@ -44,6 +47,11 @@ class LanguageManager {
                 'all-mats-cleared': '所有地墊已清除！',
                 'log-cleared': '記錄已清除！',
                 'config-imported': '配置已匯入！',
+                'config-saved': '配置已儲存！',
+                'config-loaded': '配置已載入！',
+                'save-error': '儲存失敗！',
+                'load-error': '載入失敗！',
+                'no-saved-config': '沒有儲存的配置！',
                 'ready-message': '地墊模擬器已準備就緒！'
             },
             en: {
@@ -70,6 +78,9 @@ class LanguageManager {
                 'zoom-label': 'Zoom',
                 'university': 'National Taipei University of Technology - Department of Interaction Design',
                 'author': 'Chia-Hsing Chen',
+                // 儲存/載入功能 / Save/Load Functions
+                'save-config': 'Save Config',
+                'load-config': 'Load Config',
                 // 記錄相關 / Record Related
                 'group-label': 'Group',
                 'number-label': 'Number',
@@ -83,6 +94,11 @@ class LanguageManager {
                 'all-mats-cleared': 'All mats cleared!',
                 'log-cleared': 'Log cleared!',
                 'config-imported': 'Configuration imported!',
+                'config-saved': 'Configuration saved!',
+                'config-loaded': 'Configuration loaded!',
+                'save-error': 'Save failed!',
+                'load-error': 'Load failed!',
+                'no-saved-config': 'No saved configuration!',
                 'ready-message': 'Floor mat simulator is ready!'
             }
         };
@@ -259,6 +275,10 @@ class FloorMatSimulator {
         document.getElementById('zoom-in').addEventListener('click', () => this.zoomIn());
         document.getElementById('zoom-out').addEventListener('click', () => this.zoomOut());
         document.getElementById('reset-zoom').addEventListener('click', () => this.resetZoom());
+        
+        // 儲存/載入按鈕 / Save/Load Buttons
+        document.getElementById('save-config').addEventListener('click', () => this.saveConfiguration());
+        document.getElementById('load-config').addEventListener('click', () => this.loadConfiguration());
         
         // 地墊拖曳 / Mat Dragging
         document.querySelector('.mat-item').addEventListener('dragstart', this.handleDragStart.bind(this));
@@ -975,7 +995,7 @@ class FloorMatSimulator {
     // 清除輸出記錄 / Clear Output Log
     clearOutputLog() {
         const outputLog = document.getElementById('output-log');
-        outputLog.innerHTML = `<p class="no-records">${langManager.getText('no-records')}</p>`;
+        outputLog.innerHTML = `<p class="no-records">${this.langManager.getText('no-records')}</p>`;
         document.getElementById('clear-log').disabled = true;
         this.showMessage(this.langManager.getText('log-cleared'), 'info');
     }
@@ -983,7 +1003,7 @@ class FloorMatSimulator {
     // 更新UI / Update UI
     updateUI() {
         // 更新縮放顯示 / Update zoom display
-        document.querySelector('.zoom-level').textContent = `${langManager.getText('zoom-label')}: ${Math.round(this.zoomLevel * 100)}%`;
+        document.querySelector('.zoom-level').textContent = `${this.langManager.getText('zoom-label')}: ${Math.round(this.zoomLevel * 100)}%`;
         
         // 更新網格資訊 / Update grid information
         document.getElementById('grid-size').textContent = `${this.gridCols}x${this.gridRows}`;
@@ -1070,6 +1090,37 @@ class FloorMatSimulator {
         });
         
         this.showMessage(this.langManager.getText('config-imported'), 'success');
+    }
+    
+    // 儲存配置到本地儲存 / Save Configuration to Local Storage
+    saveConfiguration() {
+        try {
+            const configuration = this.exportConfiguration();
+            const configString = JSON.stringify(configuration);
+            localStorage.setItem('floor-mat-config', configString);
+            this.showMessage(this.langManager.getText('config-saved'), 'success');
+        } catch (error) {
+            console.error('Save configuration error:', error);
+            this.showMessage(this.langManager.getText('save-error'), 'error');
+        }
+    }
+    
+    // 從本地儲存載入配置 / Load Configuration from Local Storage
+    loadConfiguration() {
+        try {
+            const configString = localStorage.getItem('floor-mat-config');
+            if (!configString) {
+                this.showMessage(this.langManager.getText('no-saved-config'), 'warning');
+                return;
+            }
+            
+            const configuration = JSON.parse(configString);
+            this.importConfiguration(configuration);
+            this.showMessage(this.langManager.getText('config-loaded'), 'success');
+        } catch (error) {
+            console.error('Load configuration error:', error);
+            this.showMessage(this.langManager.getText('load-error'), 'error');
+        }
     }
 }
 
