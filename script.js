@@ -1002,8 +1002,11 @@ class FloorMatSimulator {
     
     // 更新UI / Update UI
     updateUI() {
-        // 更新縮放顯示 / Update zoom display
-        document.querySelector('.zoom-level').textContent = `${this.langManager.getText('zoom-label')}: ${Math.round(this.zoomLevel * 100)}%`;
+        // 更新縮放百分比顯示 / Update zoom percentage display
+        const zoomPercentageElement = document.getElementById('zoom-percentage');
+        if (zoomPercentageElement) {
+            zoomPercentageElement.textContent = `${Math.round(this.zoomLevel * 100)}%`;
+        }
         
         // 更新網格資訊 / Update grid information
         document.getElementById('grid-size').textContent = `${this.gridCols}x${this.gridRows}`;
