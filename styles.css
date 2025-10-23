@@ -52,7 +52,7 @@ body {
 /* 左側網格容器 (65% 寬度) */
 .grid-container {
     width: 65%;
-    height: 100%;
+    height: 100vh;
     background-color: #ffffff;
     border-right: 2px solid #ddd;
     display: flex;
@@ -62,7 +62,7 @@ body {
 /* 中間記錄區域 (15% 寬度) */
 .record-area {
     width: 15%;
-    height: 100%;
+    height: 100vh;
     background-color: #f8f9fa;
     border-right: 2px solid #ddd;
     padding: 0;
@@ -74,11 +74,19 @@ body {
 /* 右側工具箱 (20% 寬度) */
 .sidebar {
     width: 20%;
-    height: 100%;
+    height: 100vh;
     background-color: #ecf0f1;
     padding: 15px;
-    overflow-y: auto;
     box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* 側邊欄內容區域 */
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }
 
 /* 網格包裝器 */
@@ -295,32 +303,35 @@ body {
 
 /* 版權宣告面板 */
 .copyright-panel {
-    margin-top: 15px;
-    padding: 10px;
-    border-top: 1px solid #ddd;
+    margin-top: auto;
+    margin-bottom: 0px;
+    padding: 12px 8px 0px 8px;
+    border-top: 1px solid #bdc3c7;
     text-align: center;
+    overflow: visible;
+    word-wrap: break-word;
+    min-height: 30px;
+    background-color: #ecf0f1;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
 }
 
 .copyright-text {
     font-size: 11px;
-    color: #7f8c8d;
-    margin: 0 0 3px 0;
+    color: #2c3e50;
+    margin: 0 0 2px 0;
     font-weight: bold;
+    line-height: 1.2;
 }
 
 .copyright-subtitle {
     font-size: 9px;
-    color: #95a5a6;
-    margin: 0 0 2px 0;
-    line-height: 1.2;
-}
-
-.copyright-course {
-    font-size: 8px;
-    color: #bdc3c7;
+    color: #34495e;
     margin: 0;
-    font-style: italic;
-    line-height: 1.2;
+    line-height: 1.1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* 地墊庫 */
@@ -481,6 +492,27 @@ body {
         max-width: 40vh;
         max-height: 40vh;
     }
+    
+    /* 中等螢幕版權面板調整 */
+    .copyright-panel {
+        padding: 5px 6px 0px 6px;
+        margin-top: auto;
+        margin-bottom: 0px;
+        min-height: 33px;
+        border-top: 1px solid #bdc3c7;
+    }
+    
+    .copyright-text {
+        font-size: 11px;
+    }
+    
+    .copyright-subtitle {
+        font-size: 9px;
+    }
+    
+    .copyright-course {
+        font-size: 8px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -509,6 +541,96 @@ body {
         max-width: 35vh;
         max-height: 35vh;
         padding: 15px;
+    }
+    
+    /* 小螢幕版權面板調整 */
+    .copyright-panel {
+        padding: 4px 4px 0px 4px;
+        margin-top: auto;
+        margin-bottom: 0px;
+        min-height: 29px;
+        border-top: 1px solid #bdc3c7;
+    }
+    
+    .copyright-text {
+        font-size: 10px;
+        line-height: 1.2;
+    }
+    
+    .copyright-subtitle {
+        font-size: 8px;
+        line-height: 1.1;
+    }
+    
+    .copyright-course {
+        font-size: 7px;
+        line-height: 1.1;
+    }
+}
+
+/* 極小螢幕優化 */
+@media (max-width: 480px) {
+    .sidebar {
+        height: 30vh;
+        padding: 8px;
+    }
+    
+    .copyright-panel {
+        padding: 2px 1px 0px 1px;
+        margin-top: auto;
+        margin-bottom: 0px;
+        min-height: 22px;
+        border-top: 1px solid #eee;
+    }
+    
+    .copyright-text {
+        font-size: 8px;
+        line-height: 1.1;
+        margin: 0 0 2px 0;
+    }
+    
+    .copyright-subtitle {
+        font-size: 6px;
+        line-height: 1.0;
+        margin: 0 0 1px 0;
+    }
+    
+    .copyright-course {
+        font-size: 5px;
+        line-height: 1.0;
+    }
+    
+    /* 確保文字不會被截斷 */
+    .copyright-text,
+    .copyright-subtitle,
+    .copyright-course {
+        word-break: break-all;
+        overflow-wrap: anywhere;
+        hyphens: auto;
+    }
+}
+
+/* 橫向模式優化 */
+@media (max-height: 600px) and (orientation: landscape) {
+    .copyright-panel {
+        padding: 1px 1px 0px 1px;
+        margin-top: auto;
+        margin-bottom: 0px;
+        min-height: 15px;
+    }
+    
+    .copyright-text {
+        font-size: 7px;
+        margin: 0 0 1px 0;
+    }
+    
+    .copyright-subtitle {
+        font-size: 5px;
+        margin: 0;
+    }
+    
+    .copyright-course {
+        display: none; /* 在極低高度時隱藏課程信息 */
     }
 }
 
