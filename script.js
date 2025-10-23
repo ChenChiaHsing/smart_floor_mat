@@ -1,11 +1,149 @@
 // 地墊模擬器 - 主要JavaScript功能
+// Floor Mat Simulator - Main JavaScript Functions
+
+// 語言管理類
+// Language Manager Class
+class LanguageManager {
+    constructor() {
+        this.currentLang = 'zh';
+        this.translations = {
+            zh: {
+                'page-title': '地墊模擬器',
+                'title': '智慧健康地墊模擬系統',
+                'subtitle': '國立臺北科技大學 智慧空間互動程式設計',
+                'record-title': '踩踏記錄',
+                'no-records': '尚無踩踏記錄',
+                'clear-log': '清除記錄',
+                'toolbox': '工具箱',
+                'mat-materials': '地墊素材',
+                'floor-mat': '地墊',
+                'info': '資訊',
+                'grid-size': '網格大小',
+                'placed': '已放置',
+                'mats': '個地墊',
+                'groups': '群組數量',
+                'groups-unit': '個',
+                'zoom-control': '縮放控制',
+                'zoom-in': '放大 (+)',
+                'zoom-out': '縮小 (-)',
+                'reset-zoom': '重設縮放',
+                'zoom': '縮放',
+                'zoom-label': '縮放',
+                'university': '國立臺北科技大學 互動設計系',
+                'author': '陳家興',
+                // 記錄相關 / Record Related
+                'group-label': '群組',
+                'number-label': '編號',
+                // 動態訊息 / Dynamic Messages
+                'drag-message': '拖曳地墊到新位置',
+                'position-occupied': '此位置已有地墊！',
+                'mat-placed': '地墊已放置！雙擊可刪除',
+                'target-occupied': '目標位置已有地墊！',
+                'mat-moved': '地墊已移動！',
+                'mat-removed': '地墊已移除！',
+                'all-mats-cleared': '所有地墊已清除！',
+                'log-cleared': '記錄已清除！',
+                'config-imported': '配置已匯入！',
+                'ready-message': '地墊模擬器已準備就緒！'
+            },
+            en: {
+                'page-title': 'Floor Mat Simulator',
+                'title': 'Smart Health Floor Mat Simulation System',
+                'subtitle': 'National Taipei University of Technology - Interaction Design and Programming in a Smart Space',
+                'record-title': 'Step Records',
+                'no-records': 'No step records yet',
+                'clear-log': 'Clear Log',
+                'toolbox': 'Toolbox',
+                'mat-materials': 'Mat Materials',
+                'floor-mat': 'Floor Mat',
+                'info': 'Information',
+                'grid-size': 'Grid Size',
+                'placed': 'Placed',
+                'mats': 'mats',
+                'groups': 'Groups',
+                'groups-unit': ' ',
+                'zoom-control': 'Zoom Control',
+                'zoom-in': 'Zoom In (+)',
+                'zoom-out': 'Zoom Out (-)',
+                'reset-zoom': 'Reset Zoom',
+                'zoom': 'Zoom',
+                'zoom-label': 'Zoom',
+                'university': 'National Taipei University of Technology - Department of Interaction Design',
+                'author': 'Chia-Hsing Chen',
+                // 記錄相關 / Record Related
+                'group-label': 'Group',
+                'number-label': 'Number',
+                // 動態訊息 / Dynamic Messages
+                'drag-message': 'Drag mat to new position',
+                'position-occupied': 'Position already occupied!',
+                'mat-placed': 'Mat placed! Double-click to remove',
+                'target-occupied': 'Target position already occupied!',
+                'mat-moved': 'Mat moved!',
+                'mat-removed': 'Mat removed!',
+                'all-mats-cleared': 'All mats cleared!',
+                'log-cleared': 'Log cleared!',
+                'config-imported': 'Configuration imported!',
+                'ready-message': 'Floor mat simulator is ready!'
+            }
+        };
+    }
+
+    switchLanguage() {
+        this.currentLang = this.currentLang === 'zh' ? 'en' : 'zh';
+        this.updateUI();
+        this.updateLangButton();
+        localStorage.setItem('floor-mat-lang', this.currentLang);
+    }
+
+    updateUI() {
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            const translation = this.translations[this.currentLang][key];
+            if (translation) {
+                element.textContent = translation;
+            }
+        });
+    }
+
+    updateLangButton() {
+        const langBtn = document.getElementById('lang-toggle');
+        if (langBtn) {
+            langBtn.textContent = this.currentLang === 'zh' ? 'EN' : '中';
+        }
+    }
+
+    getText(key) {
+        return this.translations[this.currentLang][key] || key;
+    }
+
+    init() {
+        // 從localStorage載入語言設定
+        const savedLang = localStorage.getItem('floor-mat-lang');
+        if (savedLang && this.translations[savedLang]) {
+            this.currentLang = savedLang;
+        }
+        
+        this.updateUI();
+        this.updateLangButton();
+        
+        // 綁定語言切換按鈕事件
+        const langBtn = document.getElementById('lang-toggle');
+        if (langBtn) {
+            langBtn.addEventListener('click', () => this.switchLanguage());
+        }
+    }
+}
 
 class FloorMatSimulator {
     constructor() {
-        // DOM元素
+        // 語言管理器 / Language Manager
+        this.langManager = new LanguageManager();
+        
+        // DOM元素 / DOM Elements
         this.gridArea = document.getElementById('grid-area');
         
-        // 縮放相關設定
+        // 縮放相關設定 / Zoom Related Settings
         this.zoomLevel = 1;
         this.ZOOM_SETTINGS = {
             MIN: 0.5,
@@ -13,30 +151,30 @@ class FloorMatSimulator {
             STEP: 0.1
         };
         
-        // 網格設定
+        // 網格設定 / Grid Settings
         this.gridCols = 8;
         this.gridRows = 8;
         this.placedMats = 0;
         
-        // 群組資訊
+        // 群組資訊 / Group Information
         this.groups = [];
         this.isDraggingExistingMat = false;
         
-        // 動畫常數
+        // 動畫常數 / Animation Constants
         this.ANIMATION_COLORS = {
             HIGHLIGHT: '#2471ed',
             DEFAULT: '#ffffff'
         };
         
         this.ANIMATION_TIMING = {
-            FADE_IN: 1000,  // 漸入時間 (ms)
-            FADE_OUT: 3000, // 漸出時間 (ms)
-            MESSAGE_AUTO_HIDE: 3000, // 訊息自動隱藏時間 (ms)
-            SLIDE_ANIMATION: 300, // 訊息滑動動畫時間 (ms)
-            DOUBLE_CLICK_DELAY: 300 // 雙擊檢測延遲 (ms)
+            FADE_IN: 1000,  // 漸入時間 (ms) / Fade in duration (ms)
+            FADE_OUT: 3000, // 漸出時間 (ms) / Fade out duration (ms)
+            MESSAGE_AUTO_HIDE: 3000, // 訊息自動隱藏時間 (ms) / Message auto hide duration (ms)
+            SLIDE_ANIMATION: 300, // 訊息滑動動畫時間 (ms) / Message slide animation duration (ms)
+            DOUBLE_CLICK_DELAY: 300 // 雙擊檢測延遲 (ms) / Double click detection delay (ms)
         };
         
-        // 訊息顏色設定
+        // 訊息顏色設定 / Message Color Settings
         this.MESSAGE_COLORS = {
             SUCCESS: '#27ae60',
             WARNING: '#f39c12',
@@ -44,7 +182,7 @@ class FloorMatSimulator {
             INFO: '#3498db'
         };
         
-        // 訊息樣式設定
+        // 訊息樣式設定 / Message Style Settings
         this.MESSAGE_STYLES = {
             POSITION_TOP: '20px',
             POSITION_RIGHT: '20px',
@@ -54,7 +192,7 @@ class FloorMatSimulator {
             BOX_SHADOW: '0 4px 8px rgba(0,0,0,0.2)'
         };
         
-        // 色彩映射設定
+        // 色彩映射設定 / Color Mapping Settings
         this.COLOR_MAP = {
             SATURATION: 70,
             LIGHTNESS: 50,
@@ -62,12 +200,12 @@ class FloorMatSimulator {
             SINGLE_GROUP_HUE_STEP: 60
         };
         
-        // UI顏色設定
+        // UI顏色設定 / UI Color Settings
         this.UI_COLORS = {
             LOG_TIME: '#2c3e50'
         };
         
-        // 佈局常數
+        // 佈局常數 / Layout Constants
         this.LAYOUT = {
             LOG_MARGIN_TOP: '2px'
         };
@@ -76,8 +214,10 @@ class FloorMatSimulator {
     }
     
     // Rainbow colormap函數 - 根據群組索引產生彩虹色
+    // Rainbow colormap function - Generate rainbow colors based on group index
     getRainbowColor(groupIndex, totalGroups) {
         // 將群組索引映射到0-1之間，即使只有一個群組也使用colormap
+        // Map group index to 0-1 range, using colormap even for single group
         const hue = totalGroups <= 1 ? 
             (groupIndex * this.COLOR_MAP.SINGLE_GROUP_HUE_STEP) % 360 : 
             (groupIndex / Math.max(1, totalGroups - 1)) * this.COLOR_MAP.HUE_RANGE;
@@ -86,12 +226,13 @@ class FloorMatSimulator {
     }
     
     init() {
+        this.langManager.init();
         this.createGrid();
         this.bindEvents();
         this.updateUI();
     }
     
-    // 創建網格
+    // 創建網格 / Create Grid
     createGrid() {
         this.gridArea.innerHTML = '';
         
@@ -102,7 +243,7 @@ class FloorMatSimulator {
                 cell.dataset.row = row;
                 cell.dataset.col = col;
                 
-                // 添加拖放事件監聽器
+                // 添加拖放事件監聽器 / Add drag and drop event listeners
                 cell.addEventListener('dragover', this.handleDragOver.bind(this));
                 cell.addEventListener('drop', this.handleDrop.bind(this));
                 cell.addEventListener('dragleave', this.handleDragLeave.bind(this));
@@ -112,36 +253,36 @@ class FloorMatSimulator {
         }
     }
     
-    // 綁定事件
+    // 綁定事件 / Bind Events
     bindEvents() {
-        // 縮放按鈕
+        // 縮放按鈕 / Zoom Buttons
         document.getElementById('zoom-in').addEventListener('click', () => this.zoomIn());
         document.getElementById('zoom-out').addEventListener('click', () => this.zoomOut());
         document.getElementById('reset-zoom').addEventListener('click', () => this.resetZoom());
         
-        // 地墊拖曳
+        // 地墊拖曳 / Mat Dragging
         document.querySelector('.mat-item').addEventListener('dragstart', this.handleDragStart.bind(this));
         document.querySelector('.mat-item').addEventListener('dragend', this.handleDragEnd.bind(this));
         
-        // 清除記錄按鈕
+        // 清除記錄按鈕 / Clear Log Button
         document.getElementById('clear-log').addEventListener('click', this.clearOutputLog.bind(this));
         
-        // 右鍵菜單（移除地墊）
+        // 右鍵菜單（移除地墊）/ Right-click Menu (Remove Mat)
         this.gridArea.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             const cell = e.target.closest('.grid-cell');
             if (cell && cell.classList.contains('occupied')) {
-                this.removeMat(cell, true); // 右鍵刪除需要確認
+                this.removeMat(cell, true); // 右鍵刪除需要確認 / Right-click removal requires confirmation
             }
         });
         
-        // 鍵盤快捷鍵
+        // 鍵盤快捷鍵 / Keyboard Shortcuts
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
         
-        // 滑鼠滾輪縮放
+        // 滑鼠滾輪縮放 / Mouse Wheel Zoom
         this.gridArea.addEventListener('wheel', this.handleWheel.bind(this));
         
-        // 網格拖曳（當縮放時）
+        // 網格拖曳（當縮放時）/ Grid Dragging (When Zoomed)
         let isDragging = false;
         let startX, startY, scrollLeft, scrollTop;
         
@@ -173,14 +314,14 @@ class FloorMatSimulator {
         });
     }
     
-    // 拖曳開始
+    // 拖曳開始 / Drag Start
     handleDragStart(e) {
         e.dataTransfer.setData('text/plain', e.target.dataset.mat);
         e.target.classList.add('dragging');
         this.isDraggingExistingMat = false;
     }
     
-    // 地墊拖曳開始
+    // 地墊拖曳開始 / Mat Drag Start
     handleMatDragStart(e, sourceCell) {
         e.dataTransfer.setData('text/plain', 'existing_mat');
         e.dataTransfer.setData('source-row', sourceCell.dataset.row);
@@ -188,43 +329,43 @@ class FloorMatSimulator {
         e.target.classList.add('dragging');
         sourceCell.classList.add('dragging-source');
         this.isDraggingExistingMat = true;
-        this.showMessage('拖曳地墊到新位置', 'info');
+        this.showMessage(this.langManager.getText('drag-message'), 'info');
     }
     
-    // 地墊拖曳結束
+    // 地墊拖曳結束 / Mat Drag End
     handleMatDragEnd(e, sourceCell) {
         e.target.classList.remove('dragging');
         sourceCell.classList.remove('dragging-source');
         this.isDraggingExistingMat = false;
         
-        // 移除所有拖曳相關的樣式
+        // 移除所有拖曳相關的樣式 / Remove all drag-related styles
         document.querySelectorAll('.grid-cell').forEach(cell => {
             cell.classList.remove('drag-over', 'dragging-source');
         });
     }
     
-    // 拖曳結束
+    // 拖曳結束 / Drag End
     handleDragEnd(e) {
         e.target.classList.remove('dragging');
     }
     
-    // 拖曳懸停
+    // 拖曳懸停 / Drag Over
     handleDragOver(e) {
         e.preventDefault();
         const cell = e.currentTarget;
         
-        // 如果格子已被占用，不顯示拖曳效果
+        // 如果格子已被占用，不顯示拖曳效果 / Don't show drag effect if cell is occupied
         if (!cell.classList.contains('occupied')) {
             cell.classList.add('drag-over');
         }
     }
     
-    // 拖曳離開
+    // 拖曳離開 / Drag Leave
     handleDragLeave(e) {
         e.currentTarget.classList.remove('drag-over');
     }
     
-    // 放置
+    // 放置 / Drop
     handleDrop(e) {
         e.preventDefault();
         const cell = e.currentTarget;
@@ -233,7 +374,7 @@ class FloorMatSimulator {
         cell.classList.remove('drag-over');
         
         if (matType === 'existing_mat') {
-            // 移動現有地墊
+            // 移動現有地墊 / Move existing mat
             const sourceRow = e.dataTransfer.getData('source-row');
             const sourceCol = e.dataTransfer.getData('source-col');
             const sourceCell = document.querySelector(`[data-row="${sourceRow}"][data-col="${sourceCol}"]`);
@@ -242,25 +383,25 @@ class FloorMatSimulator {
                 this.moveMatTo(sourceCell, cell);
             }
         } else {
-            // 檢查格子是否已被占用
+            // 檢查格子是否已被占用 / Check if cell is already occupied
             if (cell.classList.contains('occupied')) {
-                this.showMessage('此位置已有地墊！', 'warning');
+                this.showMessage(this.langManager.getText('position-occupied'), 'warning');
                 return;
             }
             
-            // 放置新地墊
+            // 放置新地墊 / Place new mat
             this.placeMat(cell, matType);
         }
     }
     
-    // 放置地墊
+    // 放置地墊 / Place Mat
     placeMat(cell, matType) {
         cell.classList.add('occupied');
         cell.innerHTML = `<div class="mat-placed" draggable="true">
             <span class="mat-number">0</span>
         </div>`;
         
-        // 添加雙擊事件
+        // 添加雙擊事件 / Add double-click event
         const matElement = cell.querySelector('.mat-placed');
         let clickCount = 0;
         let clickTimer = null;
@@ -270,20 +411,20 @@ class FloorMatSimulator {
             clickCount++;
             
             if (clickCount === 1) {
-                // 單擊處理
+                // 單擊處理 / Single click handling
                 clickTimer = setTimeout(() => {
                     this.onMatClick(cell);
                     clickCount = 0;
                 }, this.ANIMATION_TIMING.DOUBLE_CLICK_DELAY);
             } else if (clickCount === 2) {
-                // 雙擊處理
+                // 雙擊處理 / Double click handling
                 clearTimeout(clickTimer);
                 this.removeMat(cell);
                 clickCount = 0;
             }
         });
         
-        // 添加拖曳事件
+        // 添加拖曳事件 / Add drag events
         matElement.addEventListener('dragstart', (e) => {
             this.handleMatDragStart(e, cell);
         });
@@ -294,22 +435,22 @@ class FloorMatSimulator {
         
         this.placedMats++;
         this.updateGroups();
-        this.updateMatNumbers(); // 重新計算所有地墊編號
+        this.updateMatNumbers(); // 重新計算所有地墊編號 / Recalculate all mat numbers
         this.updateUI();
-        this.showMessage('地墊已放置！雙擊可刪除', 'success');
+        this.showMessage(this.langManager.getText('mat-placed'), 'success');
     }
     
-    // 移動地墊到新位置
+    // 移動地墊到新位置 / Move Mat to New Position
     moveMatTo(sourceCell, targetCell) {
         if (targetCell.classList.contains('occupied')) {
-            this.showMessage('目標位置已有地墊！', 'warning');
+            this.showMessage(this.langManager.getText('target-occupied'), 'warning');
             return;
         }
         
-        // 移除源位置的地墊
+        // 移除源位置的地墊 / Remove mat from source position
         const matElement = sourceCell.querySelector('.mat-placed');
         
-        // 清除源位置的高亮計時器
+        // 清除源位置的高亮計時器 / Clear highlight timers from source position
         if (sourceCell.highlightTimer) {
             clearTimeout(sourceCell.highlightTimer);
             sourceCell.highlightTimer = null;
@@ -324,13 +465,13 @@ class FloorMatSimulator {
         delete sourceCell.dataset.groupId;
         sourceCell.innerHTML = '';
         
-        // 在目標位置放置地墊
+        // 在目標位置放置地墊 / Place mat at target position
         targetCell.classList.add('occupied');
         targetCell.innerHTML = `<div class="mat-placed" draggable="true">
             <span class="mat-number">0</span>
         </div>`;
         
-        // 為新位置的地墊添加事件
+        // 為新位置的地墊添加事件 / Add events for mat at new position
         const newMatElement = targetCell.querySelector('.mat-placed');
         let clickCount = 0;
         let clickTimer = null;
@@ -359,14 +500,14 @@ class FloorMatSimulator {
             this.handleMatDragEnd(e, targetCell);
         });
         
-        // 重新計算群組和編號
+        // 重新計算群組和編號 / Recalculate groups and numbers
         this.updateGroups();
         this.updateMatNumbers();
         this.updateUI();
-        this.showMessage('地墊已移動！', 'success');
+        this.showMessage(this.langManager.getText('mat-moved'), 'success');
     }
     
-    // 地墊點擊事件
+    // 地墊點擊事件 / Mat Click Event
     onMatClick(cell) {
         const groupInfo = this.findMatGroupInfo(cell);
         const currentTime = new Date().toLocaleString('zh-TW', {
@@ -380,13 +521,13 @@ class FloorMatSimulator {
         
         this.addOutputRecord(currentTime, groupInfo.groupId, groupInfo.matNumber);
         
-        // 高亮顯示單個地墊
+        // 高亮顯示單個地墊 / Highlight single mat
         this.highlightSingleMat(cell);
     }
     
-    // 更新所有地墊編號（群組內從1開始）
+    // 更新所有地墊編號（群組內從1開始）/ Update All Mat Numbers (Starting from 1 within groups)
     updateMatNumbers() {
-        // 首先清除所有群組樣式
+        // 首先清除所有群組樣式 / First clear all group styles
         const allCells = document.querySelectorAll('.grid-cell');
         allCells.forEach(cell => {
             cell.classList.remove('in-group', 'group-border-top', 'group-border-bottom', 
@@ -395,21 +536,21 @@ class FloorMatSimulator {
             if (existingLabel) {
                 existingLabel.remove();
             }
-            // 清除自定義樣式
+            // 清除自定義樣式 / Clear custom styles
             cell.style.removeProperty('--group-color');
         });
 
-        // 計算多群組的總數（用於rainbow colormap）
+        // 計算多群組的總數（用於rainbow colormap）/ Calculate total number of multi-groups (for rainbow colormap)
         const multiGroups = this.groups.filter(group => group.size > 1);
         const totalMultiGroups = multiGroups.length;
 
         this.groups.forEach((group, groupIndex) => {
-            if (group.size > 1) { // 只有多於一個地墊的群組才顯示群組效果
-                // 獲取群組在多群組中的索引
+            if (group.size > 1) { // 只有多於一個地墊的群組才顯示群組效果 / Only show group effects for groups with more than one mat
+                // 獲取群組在多群組中的索引 / Get group index in multi-groups
                 const multiGroupIndex = multiGroups.findIndex(g => g === group);
                 const groupColor = this.getRainbowColor(multiGroupIndex, totalMultiGroups);
                 
-                // 創建群組位置的查找表
+                // 創建群組位置的查找表 / Create lookup table for group positions
                 const groupPositions = new Set();
                 group.positions.forEach(pos => {
                     groupPositions.add(`${pos.row}-${pos.col}`);
@@ -598,9 +739,9 @@ class FloorMatSimulator {
         return group;
     }
     
-    // 高亮單個地墊
+    // 高亮單個地墊 / Highlight Single Mat
     highlightSingleMat(cell) {
-        // 清除任何現有的計時器
+        // 清除任何現有的計時器 / Clear any existing timers
         if (cell.highlightTimer) {
             clearTimeout(cell.highlightTimer);
             cell.highlightTimer = null;
@@ -610,36 +751,36 @@ class FloorMatSimulator {
             cell.fadeTimer = null;
         }
         
-        // 完全清除所有樣式和類別
+        // 完全清除所有樣式和類別 / Completely clear all styles and classes
         cell.classList.remove('highlighted', 'fading');
         cell.style.cssText = '';
         
-        // 強制重繪
+        // 強制重繪 / Force repaint
         cell.offsetHeight;
         
-        // 第一階段：1秒從白色漸變到藍色
+        // 第一階段：1秒從白色漸變到藍色 / Phase 1: 1 second fade from white to blue
         cell.style.backgroundColor = this.ANIMATION_COLORS.DEFAULT;
         cell.style.transition = `background-color ${this.ANIMATION_TIMING.FADE_IN}ms ease-in-out`;
         cell.style.setProperty('transition', `background-color ${this.ANIMATION_TIMING.FADE_IN}ms ease-in-out`, 'important');
         
-        // 強制重繪
+        // 強制重繪 / Force repaint
         cell.offsetHeight;
         
-        // 用requestAnimationFrame確保在下一個渲染週期改變顏色
+        // 用requestAnimationFrame確保在下一個渲染週期改變顏色 / Use requestAnimationFrame to ensure color change in next render cycle
         requestAnimationFrame(() => {
             cell.style.backgroundColor = this.ANIMATION_COLORS.HIGHLIGHT;
             cell.style.setProperty('background-color', this.ANIMATION_COLORS.HIGHLIGHT, 'important');
         });
         
-        // 1秒後開始淡出動畫
+        // 1秒後開始淡出動畫 / Start fade out animation after 1 second
         cell.fadeTimer = setTimeout(() => {
-            // 第二階段：3秒從藍色漸變回白色
+            // 第二階段：3秒從藍色漸變回白色 / Phase 2: 3 seconds fade from blue back to white
             cell.style.transition = `background-color ${this.ANIMATION_TIMING.FADE_OUT}ms ease-in-out`;
             cell.style.setProperty('transition', `background-color ${this.ANIMATION_TIMING.FADE_OUT}ms ease-in-out`, 'important');
             cell.style.backgroundColor = this.ANIMATION_COLORS.DEFAULT;
             cell.style.setProperty('background-color', this.ANIMATION_COLORS.DEFAULT, 'important');
             
-            // 3秒後完全清除
+            // 3秒後完全清除 / Completely clear after 3 seconds
             cell.highlightTimer = setTimeout(() => {
                 cell.style.cssText = '';
                 cell.classList.remove('highlighted', 'fading');
@@ -650,9 +791,9 @@ class FloorMatSimulator {
         }, this.ANIMATION_TIMING.FADE_IN);
     }
     
-    // 高亮群組（保留函數以備未來使用）
+    // 高亮群組（保留函數以備未來使用）/ Highlight Group (Reserved function for future use)
     highlightGroup(groupId) {
-        // 高亮當前群組
+        // 高亮當前群組 / Highlight current group
         if (groupId > 0 && groupId <= this.groups.length) {
             const group = this.groups[groupId - 1];
             group.positions.forEach(pos => {
@@ -702,7 +843,7 @@ class FloorMatSimulator {
         const record = document.createElement('p');
         record.innerHTML = `
             <div style="font-weight: bold; color: ${this.UI_COLORS.LOG_TIME};">${time}</div>
-            <div style="margin-top: ${this.LAYOUT.LOG_MARGIN_TOP};">群組: ${groupId} | 編號: ${matNumber}</div>
+            <div style="margin-top: ${this.LAYOUT.LOG_MARGIN_TOP};">${this.langManager.getText('group-label')}: ${groupId} | ${this.langManager.getText('number-label')}: ${matNumber}</div>
         `;
         outputLog.appendChild(record);
         
@@ -713,7 +854,7 @@ class FloorMatSimulator {
         document.getElementById('clear-log').disabled = false;
     }
     
-    // 縮放功能
+    // 縮放功能 / Zoom Functions
     zoomIn() {
         if (this.zoomLevel < this.ZOOM_SETTINGS.MAX) {
             this.zoomLevel += this.ZOOM_SETTINGS.STEP;
@@ -731,7 +872,7 @@ class FloorMatSimulator {
     resetZoom() {
         this.zoomLevel = 1;
         this.applyZoom();
-        // 重置滾動位置
+        // 重置滾動位置 / Reset scroll position
         this.gridArea.parentElement.scrollLeft = 0;
         this.gridArea.parentElement.scrollTop = 0;
     }
@@ -741,7 +882,7 @@ class FloorMatSimulator {
         this.updateUI();
     }
     
-    // 滑鼠滾輪縮放
+    // 滑鼠滾輪縮放 / Mouse Wheel Zoom
     handleWheel(e) {
         if (e.ctrlKey) {
             e.preventDefault();
@@ -753,7 +894,7 @@ class FloorMatSimulator {
         }
     }
     
-    // 鍵盤快捷鍵
+    // 鍵盤快捷鍵 / Keyboard Shortcuts
     handleKeyDown(e) {
         if (e.ctrlKey) {
             switch (e.key) {
@@ -773,16 +914,16 @@ class FloorMatSimulator {
             }
         }
         
-        // 清除所有地墊（Delete鍵）
+        // 清除所有地墊（Delete鍵）/ Clear all mats (Delete key)
         if (e.key === 'Delete' && e.shiftKey) {
             this.clearAllMats();
         }
     }
     
-    // 移除地墊（雙擊或右鍵點擊）
+    // 移除地墊（雙擊或右鍵點擊）/ Remove Mat (Double-click or right-click)
     removeMat(cell, showConfirm = false) {
         if (!showConfirm || confirm('確定要移除這個地墊嗎？')) {
-            // 清除該地墊的高亮計時器
+            // 清除該地墊的高亮計時器 / Clear highlight timers for this mat
             if (cell.highlightTimer) {
                 clearTimeout(cell.highlightTimer);
                 cell.highlightTimer = null;
@@ -798,18 +939,18 @@ class FloorMatSimulator {
             cell.innerHTML = '';
             this.placedMats--;
             this.updateGroups();
-            this.updateMatNumbers(); // 重新計算編號
+            this.updateMatNumbers(); // 重新計算編號 / Recalculate numbers
             this.updateUI();
-            this.showMessage('地墊已移除！', 'info');
+            this.showMessage(this.langManager.getText('mat-removed'), 'info');
         }
     }
     
-    // 清除所有地墊
+    // 清除所有地墊 / Clear All Mats
     clearAllMats() {
         if (this.placedMats > 0 && confirm('確定要清除所有地墊嗎？')) {
             const occupiedCells = document.querySelectorAll('.grid-cell.occupied');
             occupiedCells.forEach(cell => {
-                // 清除每個地墊的高亮計時器
+                // 清除每個地墊的高亮計時器 / Clear highlight timers for each mat
                 if (cell.highlightTimer) {
                     clearTimeout(cell.highlightTimer);
                     cell.highlightTimer = null;
@@ -827,36 +968,36 @@ class FloorMatSimulator {
             this.placedMats = 0;
             this.groups = [];
             this.updateUI();
-            this.showMessage('所有地墊已清除！', 'info');
+            this.showMessage(this.langManager.getText('all-mats-cleared'), 'info');
         }
     }
     
-    // 清除輸出記錄
+    // 清除輸出記錄 / Clear Output Log
     clearOutputLog() {
         const outputLog = document.getElementById('output-log');
-        outputLog.innerHTML = '<p class="no-records">尚無點選記錄</p>';
+        outputLog.innerHTML = `<p class="no-records">${langManager.getText('no-records')}</p>`;
         document.getElementById('clear-log').disabled = true;
-        this.showMessage('記錄已清除！', 'info');
+        this.showMessage(this.langManager.getText('log-cleared'), 'info');
     }
     
-    // 更新UI
+    // 更新UI / Update UI
     updateUI() {
-        // 更新縮放顯示
-        document.querySelector('.zoom-level').textContent = `縮放: ${Math.round(this.zoomLevel * 100)}%`;
+        // 更新縮放顯示 / Update zoom display
+        document.querySelector('.zoom-level').textContent = `${langManager.getText('zoom-label')}: ${Math.round(this.zoomLevel * 100)}%`;
         
-        // 更新網格資訊
+        // 更新網格資訊 / Update grid information
         document.getElementById('grid-size').textContent = `${this.gridCols}x${this.gridRows}`;
         document.getElementById('placed-count').textContent = this.placedMats;
         document.getElementById('group-count').textContent = this.groups.length;
         
-        // 更新按鈕狀態
+        // 更新按鈕狀態 / Update button states
         document.getElementById('zoom-in').disabled = this.zoomLevel >= this.ZOOM_SETTINGS.MAX;
         document.getElementById('zoom-out').disabled = this.zoomLevel <= this.ZOOM_SETTINGS.MIN;
     }
     
-    // 顯示訊息
+    // 顯示訊息 / Show Message
     showMessage(message, type = 'info') {
-        // 創建訊息元素
+        // 創建訊息元素 / Create message element
         const messageEl = document.createElement('div');
         messageEl.className = `message message-${type}`;
         messageEl.textContent = message;
@@ -875,7 +1016,7 @@ class FloorMatSimulator {
         
         document.body.appendChild(messageEl);
         
-        // 3秒後自動移除
+        // 3秒後自動移除 / Auto remove after 3 seconds
         setTimeout(() => {
             messageEl.style.animation = 'slideOut 0.3s ease';
             setTimeout(() => {
@@ -886,7 +1027,7 @@ class FloorMatSimulator {
         }, this.ANIMATION_TIMING.MESSAGE_AUTO_HIDE);
     }
     
-    // 獲取訊息顏色
+    // 獲取訊息顏色 / Get Message Color
     getMessageColor(type) {
         switch (type) {
             case 'success': return this.MESSAGE_COLORS.SUCCESS;
@@ -896,7 +1037,7 @@ class FloorMatSimulator {
         }
     }
     
-    // 匯出網格配置
+    // 匯出網格配置 / Export Grid Configuration
     exportConfiguration() {
         const configuration = {
             gridSize: { cols: this.gridCols, rows: this.gridRows },
@@ -915,12 +1056,12 @@ class FloorMatSimulator {
         return configuration;
     }
     
-    // 匯入網格配置
+    // 匯入網格配置 / Import Grid Configuration
     importConfiguration(configuration) {
-        // 清除現有地墊
+        // 清除現有地墊 / Clear existing mats
         this.clearAllMats();
         
-        // 放置地墊
+        // 放置地墊 / Place mats
         configuration.mats.forEach(mat => {
             const cell = document.querySelector(`[data-row="${mat.row}"][data-col="${mat.col}"]`);
             if (cell) {
@@ -928,11 +1069,11 @@ class FloorMatSimulator {
             }
         });
         
-        this.showMessage('配置已匯入！', 'success');
+        this.showMessage(this.langManager.getText('config-imported'), 'success');
     }
 }
 
-// 動畫樣式
+// 動畫樣式 / Animation Styles
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {
@@ -959,13 +1100,18 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// 初始化應用程式
+// 初始化應用程式 / Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
     const simulator = new FloorMatSimulator();
     
-    // 將模擬器實例設為全域變數，方便除錯
+    // 將模擬器實例設為全域變數，方便除錯 / Set simulator instance as global variable for debugging
     window.floorMatSimulator = simulator;
     
-    // 顯示歡迎訊息
-    simulator.showMessage('地墊模擬器已準備就緒！', 'success');
+    // 確保語言UI在DOM完全加載後正確更新 / Ensure language UI updates correctly after DOM is fully loaded
+    setTimeout(() => {
+        simulator.langManager.updateUI();
+    }, 0);
+    
+    // 顯示歡迎訊息 / Show welcome message
+    simulator.showMessage(simulator.langManager.getText('ready-message'), 'success');
 });

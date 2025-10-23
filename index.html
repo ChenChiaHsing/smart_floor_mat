@@ -3,75 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>地墊模擬器</title>
+    <title data-i18n="page-title">地墊模擬器</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <!-- 左側網格區域 (4/5 寬度) -->
+        <!-- 左側網格區域 (4/5 寬度) / Left Grid Area (4/5 width) -->
         <div class="grid-container">
-            <!-- 標題欄 -->
+            <!-- 標題欄 / Title Header -->
             <header class="title-header">
-                <h1>智慧健康地墊模擬系統</h1>
-                <p>國立臺北科技大學 智慧空間互動程式設計</p>
+                <div class="title-content">
+                    <h1 data-i18n="title">智慧健康地墊模擬系統</h1>
+                    <p data-i18n="subtitle">國立臺北科技大學 智慧空間互動程式設計</p>
+                </div>
+                <div class="language-switch">
+                    <button id="lang-toggle" class="lang-btn">EN</button>
+                </div>
             </header>
             
             <div class="grid-wrapper">
                 <div class="grid-area" id="grid-area">
-                    <!-- 網格將在這裡動態生成 -->
+                    <!-- 網格將在這裡動態生成 / Grid will be dynamically generated here -->
                 </div>
             </div>
         </div>
         
-        <!-- 中間記錄區域 -->
+        <!-- 中間記錄區域 / Middle Record Area -->
         <div class="record-area">
             <div class="output-panel">
-                <h4>踩踏記錄</h4>
+                <h4 data-i18n="record-title">踩踏記錄</h4>
                 <div class="output-log" id="output-log">
-                    <p class="no-records">尚無踩踏記錄</p>
+                    <p class="no-records" data-i18n="no-records">尚無踩踏記錄</p>
                 </div>
-                <button id="clear-log" class="clear-btn">清除記錄</button>
+                <button id="clear-log" class="clear-btn" data-i18n="clear-log">清除記錄</button>
             </div>
         </div>
         
-        <!-- 右側工具箱區域 -->
+        <!-- 右側工具箱區域 / Right Toolbox Area -->
         <div class="sidebar">
             <div class="sidebar-content">
-                <h3>工具箱</h3>
+                <h3 data-i18n="toolbox">工具箱</h3>
                 
                 <div class="mat-library">
-                    <h4>地墊素材</h4>
+                    <h4 data-i18n="mat-materials">地墊素材</h4>
                     <div class="mat-item" draggable="true" data-mat="floor_mat">
                         <img src="assets/floor_mat.svg" alt="地墊" class="mat-preview">
-                        <span>地墊</span>
+                        <span data-i18n="floor-mat">地墊</span>
                     </div>
                 </div>
                 
                 <div class="info-panel">
-                    <h4>資訊</h4>
+                    <h4 data-i18n="info">資訊</h4>
                     <div class="grid-info">
-                        <p>網格大小: <span id="grid-size">8x8</span></p>
-                        <p>已放置: <span id="placed-count">0</span> 個地墊</p>
-                        <p>群組數量: <span id="group-count">0</span> 個</p>
+                        <p><span data-i18n="grid-size">網格大小</span>: <span id="grid-size">8x8</span></p>
+                        <p><span data-i18n="placed">已放置</span>: <span id="placed-count">0</span> <span data-i18n="mats">個地墊</span></p>
+                        <p><span data-i18n="groups">群組數量</span>: <span id="group-count">0</span> <span data-i18n="groups-unit">個</span></p>
                     </div>
                 </div>
                 
                 <!-- 縮放控制 -->
                 <div class="zoom-panel">
-                    <h4>縮放控制</h4>
+                    <h4 data-i18n="zoom-control">縮放控制</h4>
                     <div class="zoom-controls">
-                        <button id="zoom-in">放大 (+)</button>
-                        <button id="zoom-out">縮小 (-)</button>
-                        <button id="reset-zoom">重設縮放</button>
-                        <span class="zoom-level">縮放: 100%</span>
+                        <button id="zoom-in" data-i18n="zoom-in">放大 (+)</button>
+                        <button id="zoom-out" data-i18n="zoom-out">縮小 (-)</button>
+                        <button id="reset-zoom" data-i18n="reset-zoom">重設縮放</button>
+                        <span class="zoom-level"><span data-i18n="zoom">縮放</span>: 100%</span>
                     </div>
                 </div>
             </div>
             
-            <!-- 版權宣告 -->
+            <!-- 版權宣告 / Copyright Notice -->
             <div class="copyright-panel">
-                <p class="copyright-text">© 2025 陳家興</p>
-                <p class="copyright-subtitle">國立臺北科技大學 互動設計系</p>
+                <p class="copyright-text">© 2025 <span data-i18n="author">陳家興</span></p>
+                <p class="copyright-subtitle" data-i18n="university">國立臺北科技大學 互動設計系</p>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-/* 全域樣式 */
+/* 全域樣式 / Global Styles */
 * {
     margin: 0;
     padding: 0;
@@ -14,7 +14,7 @@ body {
     height: 100vh;
 }
 
-/* 標題欄 */
+/* 標題欄 / Title Header */
 .title-header {
     background: linear-gradient(135deg, #161b47 0%, #374087 100%);
     color: white;
@@ -24,6 +24,14 @@ body {
     position: relative;
     z-index: 1000;
     flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-content {
+    flex: 1;
+    text-align: center;
 }
 
 .title-header h1 {
@@ -40,7 +48,35 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* 主容器 */
+/* 語言切換按鈕 / Language Switch Button */
+.language-switch {
+    position: relative;
+}
+
+.lang-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.lang-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.lang-btn:active {
+    transform: translateY(0);
+}
+
+/* 主容器 / Main Container */
 .container {
     display: flex;
     flex: 1;
@@ -49,7 +85,7 @@ body {
     overflow: hidden;
 }
 
-/* 左側網格容器 (65% 寬度) */
+/* 左側網格容器 (65% 寬度) / Left Grid Container (65% width) */
 .grid-container {
     width: 65%;
     height: 100vh;
@@ -59,7 +95,7 @@ body {
     flex-direction: column;
 }
 
-/* 中間記錄區域 (15% 寬度) */
+/* 中間記錄區域 (15% 寬度) / Middle Record Area (15% width) */
 .record-area {
     width: 15%;
     height: 100vh;
@@ -71,7 +107,7 @@ body {
     flex-direction: column;
 }
 
-/* 右側工具箱 (20% 寬度) */
+/* 右側工具箱 (20% 寬度) / Right Sidebar Toolbox (20% width) */
 .sidebar {
     width: 20%;
     height: 100vh;
@@ -82,14 +118,14 @@ body {
     flex-direction: column;
 }
 
-/* 側邊欄內容區域 */
+/* 側邊欄內容區域 / Sidebar Content Area */
 .sidebar-content {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
 }
 
-/* 網格包裝器 */
+/* 網格包裝器 / Grid Wrapper */
 .grid-wrapper {
     flex: 1;
     overflow: auto;
@@ -100,7 +136,7 @@ body {
     justify-content: center;
 }
 
-/* 網格區域 */
+/* 網格區域 / Grid Area */
 .grid-area {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -243,6 +279,7 @@ body {
     font-size: 16px;
     border-bottom: 2px solid #3498db;
     padding-bottom: 6px;
+    text-align: center;
 }
 
 .sidebar h4 {
@@ -259,6 +296,7 @@ body {
     font-size: 16px;
     border-bottom: 2px solid #e74c3c;
     background-color: white;
+    text-align: center;
 }
 
 /* 縮放面板 */
