@@ -1,0 +1,50 @@
+# Firebase 配置檔案 (包含敏感資訊)
+# Firebase configuration files (contains sensitive information)
+firebase-config.js
+
+# 環境變數檔案
+# Environment variable files
+.env
+.env.local
+.env.development
+.env.production
+
+# 日誌檔案
+# Log files
+*.log
+logs/
+
+# 暫存檔案
+# Temporary files
+*.tmp
+*.temp
+
+# 作業系統生成檔案
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE/編輯器檔案
+# IDE/Editor files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# 依賴管理檔案 (如果使用 npm)
+# Dependency management files (if using npm)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 建置輸出
+# Build outputs
+dist/
+build/

@@ -241,11 +241,23 @@ class FloorMatSimulator {
         return `hsl(${hue}, ${this.COLOR_MAP.SATURATION}%, ${this.COLOR_MAP.LIGHTNESS}%)`;
     }
     
-    init() {
+    async init() {
         this.langManager.init();
         this.createGrid();
         this.bindEvents();
         this.updateUI();
+        
+        // 初始化 Firebase
+        if (typeof firebaseManager !== 'undefined') {
+            try {
+                await firebaseManager.init();
+                console.log('Firebase integration enabled');
+            } catch (error) {
+                console.warn('Firebase integration failed:', error);
+            }
+        } else {
+            console.warn('Firebase configuration not found');
+        }
     }
     
     // 創建網格 / Create Grid
@@ -852,7 +864,7 @@ class FloorMatSimulator {
     }
     
     // 添加輸出記錄
-    addOutputRecord(time, groupId, matNumber) {
+    async addOutputRecord(time, groupId, matNumber) {
         const outputLog = document.getElementById('output-log');
         const noRecords = outputLog.querySelector('.no-records');
         
@@ -872,6 +884,16 @@ class FloorMatSimulator {
         
         // 啟用清除按鈕
         document.getElementById('clear-log').disabled = false;
+        
+        // 同時記錄到 Firebase Realtime Database
+        if (typeof firebaseManager !== 'undefined' && firebaseManager.initialized) {
+            try {
+                await firebaseManager.logMatPress(time, groupId, matNumber);
+                console.log(`Mat press logged: Group ${groupId}, Mat ${matNumber} at ${time}`);
+            } catch (error) {
+                console.error('Failed to log to Firebase:', error);
+            }
+        }
     }
     
     // 縮放功能 / Zoom Functions
